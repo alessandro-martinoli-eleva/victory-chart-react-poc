@@ -48,9 +48,9 @@ const generateForecastData = (startDate, endDate, startValue, volatility) => {
 };
 
 const today = new Date();
-const forecastMaxDate = new Date().setDate(today.getDate() + 90);
-const zoomMaxDate = new Date().setDate(today.getDate() + 90);
-const zoomMinDate = new Date().setDate(today.getDate() - 90);
+const forecastMaxDate = new Date().setDate(today.getDate() + 10);
+const zoomMaxDate = new Date().setDate(today.getDate() + 10);
+const zoomMinDate = new Date().setDate(today.getDate() - 10);
 
 
 const {forecastMin, forecastMax} = generateForecastData(today, forecastMaxDate, 650, 10);
@@ -64,7 +64,7 @@ const markets = {
             {
                 name: 'historical',
                 legend: 'Dati storici',
-                data: generateMarketData('2020-01-01', today, 650, 10),
+                data: generateMarketData('2025-04-01', today, 650, 10),
                 stroke: {color: "#0077cc"},
                 type: 'line',
             },
@@ -87,7 +87,7 @@ const markets = {
                 legend: 'Indicatore finanziario',
                 data: generateMarketData(today, forecastMaxDate, 10000, 1000),
                 stroke: {color: "#f58585"},
-                type: 'line',
+                type: 'area',
             },
         ]
     },
@@ -102,6 +102,8 @@ const markets = {
         data: generateMarketData('2020-01-01', today, 320, 4)
     }
 };
+
+console.log(markets);
 
 export default () => {
     const [selectedMarket, setSelectedMarket] = useState('CBOT');
@@ -166,35 +168,41 @@ export default () => {
                         }}
                     />
 
-                    {/* label for right y-axis */}
-                    <VictoryLabel
-                        text={selected.unitRight}
-                        x={width - 50}
-                        y={30}
-                        textAnchor="middle"
-                        style={{fontSize: 15}}
-                    />
-
-                    {/* right y-axis */}
-                    {selected.data.unitRight && (
+                    {selected.unitRight && (
                         <>
+                            {/* label for right y-axis */}
+                            <VictoryLabel
+                                text={selected.unitRight}
+                                x={width - 50}
+                                y={30}
+                                textAnchor="middle"
+                                style={{fontSize: 15}}
+                            />
+
+                            {/* right y-axis */}
                             <VictoryAxis
                                 dependentAxis
                                 orientation="right"
                                 style={{
-                                    tickLabels: {fontSize: 12, padding: 5},
-                                }}
-                            />
-
-                            {/* x-axis */}
-                            <VictoryAxis
-                                tickFormat={(t) => {
-                                    const date = new Date(t);
-                                    return (date.getMonth() - 1) + '/' + date.getFullYear();
+                                    grid: {
+                                        stroke: "lightgray",
+                                    },
+                                    tickLabels: {
+                                        fontSize: 12,
+                                        padding: 5
+                                    },
                                 }}
                             />
                         </>
                     )}
+
+                    {/* x-axis */}
+                    <VictoryAxis
+                        tickFormat={(t) => {
+                            const date = new Date(t);
+                            return (date.getMonth() - 1) + '/' + date.getFullYear();
+                        }}
+                    />
 
                     {/** Data block */}
                     {selected.data.map((dataSet: any) => {
